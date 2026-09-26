@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Computer Saathi</title>
+<style>
+:root{
+  --blue:#3B82F6; --blue-d:#2563EB; --green:#22C55E; --yellow:#FACC15;
+  --purple:#8B5CF6; --red:#EF4444; --bg:#F7F9FC; --card:#FFFFFF;
+  --text:#1F2937; --muted:#6B7280; --radius:18px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Segoe UI',Verdana,Arial,sans-serif;background:var(--bg);color:var(--text);}
+#app{max-width:900px;margin:0 auto;padding:20px;min-height:100vh;}
+h1,h2,h3{margin:0 0 8px;}
+.center{text-align:center;}
+.card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:18px;}
+.btn{display:inline-block;border:none;border-radius:14px;padding:16px 26px;font-size:1.1rem;font-weight:700;cursor:pointer;margin:6px;transition:transform .1s;}
+.btn:active{transform:scale(.97);}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-yellow{background:var(--yellow);color:#1F2937;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-outline{background:#fff;color:var(--blue);border:2px solid var(--blue);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.big-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+input,select{width:100%;padding:14px;font-size:1.05rem;border:2px solid #E5E7EB;border-radius:12px;margin:6px 0 14px;}
+label{font-weight:600;font-size:.95rem;color:var(--muted);}
+.logo{font-size:2.2rem;font-weight:800;color:var(--blue-d);}
+.sub{color:var(--muted);font-size:1.1rem;margin-bottom:20px;}
+.progressbar{background:#E5E7EB;border-radius:10px;height:18px;overflow:hidden;margin:14px 0;}
+.progressbar>div{background:var(--green);height:100%;transition:width .3s;}
+.q-text{font-size:1.4rem;font-weight:700;margin:18px 0;}
+.opt{display:block;width:100%;text-align:left;background:#F1F5F9;border:2px solid transparent;border-radius:14px;padding:16px;margin:8px 0;font-size:1.05rem;cursor:pointer;}
+.opt.selected{border-color:var(--blue);background:#DBEAFE;}
+.nav-row{display:flex;justify-content:space-between;margin-top:16px;}
+.cat-pill{display:inline-block;background:var(--purple);color:#fff;padding:4px 12px;border-radius:20px;font-size:.8rem;margin-bottom:8px;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10;}
+.modal{background:#fff;border-radius:var(--radius);padding:26px;max-width:400px;text-align:center;}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+th,td{padding:10px;text-align:left;border-bottom:1px solid #E5E7EB;font-size:.95rem;}
+th{color:var(--muted);}
+tr:hover{background:#F9FAFB;cursor:pointer;}
+.cards-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px;}
+.stat-card{background:#fff;border-radius:14px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.stat-num{font-size:1.8rem;font-weight:800;color:var(--blue-d);}
+.stat-lbl{font-size:.8rem;color:var(--muted);text-transform:uppercase;}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.tab{padding:10px 16px;border-radius:12px;background:#EEF2FF;cursor:pointer;font-weight:600;font-size:.9rem;}
+.tab.active{background:var(--blue);color:#fff;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin:6px 0;}
+.bar-track{flex:1;background:#E5E7EB;border-radius:8px;height:14px;overflow:hidden;}
+.bar-fill{background:var(--purple);height:100%;}
+.msg{font-size:1.15rem;font-weight:600;margin:10px 0;}
+.small{font-size:.85rem;color:var(--muted);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="script.js"></script>
+
+
+</body>
+</html>
