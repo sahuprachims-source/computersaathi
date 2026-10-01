@@ -2,65 +2,222 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Computer Saathi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniPlay-AI Cognitive Assessment</title>
 <style>
-:root{
-  --blue:#3B82F6; --blue-d:#2563EB; --green:#22C55E; --yellow:#FACC15;
-  --purple:#8B5CF6; --red:#EF4444; --bg:#F7F9FC; --card:#FFFFFF;
-  --text:#1F2937; --muted:#6B7280; --radius:18px;
-}
-*{box-sizing:border-box;}
-body{margin:0;font-family:'Segoe UI',Verdana,Arial,sans-serif;background:var(--bg);color:var(--text);}
-#app{max-width:900px;margin:0 auto;padding:20px;min-height:100vh;}
-h1,h2,h3{margin:0 0 8px;}
-.center{text-align:center;}
-.card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:18px;}
-.btn{display:inline-block;border:none;border-radius:14px;padding:16px 26px;font-size:1.1rem;font-weight:700;cursor:pointer;margin:6px;transition:transform .1s;}
-.btn:active{transform:scale(.97);}
-.btn-blue{background:var(--blue);color:#fff;}
-.btn-green{background:var(--green);color:#fff;}
-.btn-yellow{background:var(--yellow);color:#1F2937;}
-.btn-red{background:var(--red);color:#fff;}
-.btn-outline{background:#fff;color:var(--blue);border:2px solid var(--blue);}
-.btn:disabled{opacity:.4;cursor:not-allowed;}
-.big-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
-input,select{width:100%;padding:14px;font-size:1.05rem;border:2px solid #E5E7EB;border-radius:12px;margin:6px 0 14px;}
-label{font-weight:600;font-size:.95rem;color:var(--muted);}
-.logo{font-size:2.2rem;font-weight:800;color:var(--blue-d);}
-.sub{color:var(--muted);font-size:1.1rem;margin-bottom:20px;}
-.progressbar{background:#E5E7EB;border-radius:10px;height:18px;overflow:hidden;margin:14px 0;}
-.progressbar>div{background:var(--green);height:100%;transition:width .3s;}
-.q-text{font-size:1.4rem;font-weight:700;margin:18px 0;}
-.opt{display:block;width:100%;text-align:left;background:#F1F5F9;border:2px solid transparent;border-radius:14px;padding:16px;margin:8px 0;font-size:1.05rem;cursor:pointer;}
-.opt.selected{border-color:var(--blue);background:#DBEAFE;}
-.nav-row{display:flex;justify-content:space-between;margin-top:16px;}
-.cat-pill{display:inline-block;background:var(--purple);color:#fff;padding:4px 12px;border-radius:20px;font-size:.8rem;margin-bottom:8px;}
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10;}
-.modal{background:#fff;border-radius:var(--radius);padding:26px;max-width:400px;text-align:center;}
-table{width:100%;border-collapse:collapse;margin-top:10px;}
-th,td{padding:10px;text-align:left;border-bottom:1px solid #E5E7EB;font-size:.95rem;}
-th{color:var(--muted);}
-tr:hover{background:#F9FAFB;cursor:pointer;}
-.cards-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px;}
-.stat-card{background:#fff;border-radius:14px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);}
-.stat-num{font-size:1.8rem;font-weight:800;color:var(--blue-d);}
-.stat-lbl{font-size:.8rem;color:var(--muted);text-transform:uppercase;}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
-.tab{padding:10px 16px;border-radius:12px;background:#EEF2FF;cursor:pointer;font-weight:600;font-size:.9rem;}
-.tab.active{background:var(--blue);color:#fff;}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
-.bar-row{display:flex;align-items:center;gap:8px;margin:6px 0;}
-.bar-track{flex:1;background:#E5E7EB;border-radius:8px;height:14px;overflow:hidden;}
-.bar-fill{background:var(--purple);height:100%;}
-.msg{font-size:1.15rem;font-weight:600;margin:10px 0;}
-.small{font-size:.85rem;color:var(--muted);}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#1f2937}
+.container{max-width:900px;margin:30px auto;padding:20px}
+.card{background:white;border-radius:16px;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,.08);margin-bottom:20px}
+h1,h2{text-align:center}
+.subtitle{text-align:center;color:#64748b}
+button{border:0;border-radius:10px;padding:12px 20px;font-size:16px;cursor:pointer;margin:6px}
+.primary{background:#2563eb;color:white}
+.secondary{background:#e5e7eb}
+.option{display:block;width:100%;margin:10px 0;background:#f1f5f9;text-align:left}
+.option:hover{background:#dbeafe}
+.progress{height:10px;background:#e5e7eb;border-radius:10px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:#2563eb;transition:.3s}
+.timer{text-align:right;font-weight:bold;color:#dc2626}
+.hidden{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.metric{padding:15px;background:#f8fafc;border-radius:10px;text-align:center}
+.big{font-size:34px;font-weight:bold}
+.feedback{text-align:center;font-weight:bold;min-height:25px}
+.emoji-seq{font-size:42px;text-align:center;letter-spacing:12px;margin:30px 0}
+.target-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:20px 0}
+.target{font-size:28px;padding:15px;border-radius:8px;background:#f8fafc;cursor:pointer}
+.target.clicked{opacity:.35}
+.instructions{background:#eff6ff;padding:15px;border-radius:10px;margin:15px 0}
+input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;margin:8px 0}
 </style>
 </head>
 <body>
-<div id="app"></div>
-<script src="script.js"></script>
+<div class="container">
 
+<div id="start" class="card">
+<h1>🧠 CogniPlay-AI</h1>
+<p class="subtitle">Gamified Multidimensional Cognitive Assessment Prototype</p>
+<div class="instructions">
+<b>Research prototype:</b> This educational assessment measures task performance in
+reasoning, working memory, attention, inhibitory control, and cognitive flexibility.
+It is not an IQ or clinical diagnostic test.
+</div>
+<label>Student ID / Code</label>
+<input id="studentId" placeholder="e.g., S001">
+<label>Age</label>
+<input id="age" type="number" min="5" max="15" placeholder="8–11">
+<label>Grade</label>
+<input id="grade" type="number" min="1" max="10" placeholder="3–5">
+<button class="primary" onclick="startTest()">Start Test</button>
+</div>
 
+<div id="test" class="card hidden">
+<div class="timer">Time: <span id="timer">00:00</span></div>
+<div class="progress"><div id="bar" class="progress-bar"></div></div>
+<h2 id="moduleTitle"></h2>
+<div id="question"></div>
+<div id="feedback" class="feedback"></div>
+<div style="text-align:center">
+<button id="nextBtn" class="primary hidden" onclick="nextQuestion()">Next</button>
+</div>
+</div>
+
+<div id="result" class="card hidden">
+<h1>Assessment Completed</h1>
+<p id="resultIntro"></p>
+<div id="metrics" class="grid"></div>
+<h2>Cognitive Performance Profile</h2>
+<div id="profile"></div>
+<button class="primary" onclick="downloadCSV()">Download Behavioural Data (CSV)</button>
+<button class="secondary" onclick="location.reload()">New Assessment</button>
+</div>
+</div>
+
+<script>
+const modules = [
+ {name:"A — Pattern Detective", key:"reasoning", type:"reasoning", items:[
+  {q:"What comes next? 🔵 🔴 🔵 🔴 ?",o:["🔵","🔴","🟢","⭐"],a:0},
+  {q:"What comes next? ⭐ ⭐ 🔵 ⭐ ⭐ 🔵 ?",o:["⭐","🔵","🟢","🔺"],a:0},
+  {q:"2 → 4 → 8 → 16 → ?",o:["18","24","32","36"],a:2},
+  {q:"5 → 10 → 15 → 20 → ?",o:["21","25","30","35"],a:1},
+  {q:"▲ ■ ▲ ■ ▲ ?",o:["■","▲","●","◆"],a:0},
+  {q:"3 → 6 → 12 → 24 → ?",o:["30","36","48","60"],a:2},
+  {q:"A, C, E, G, ?",o:["H","I","J","K"],a:1},
+  {q:"10, 9, 7, 4, ?",o:["2","1","0","-1"],a:1},
+  {q:"If all cats are animals, which must be true?",o:["All animals are cats","Some cats are animals","No cats are animals","Cats are plants"],a:1},
+  {q:"Which does not belong?",o:["2","4","6","9"],a:3}
+ ]},
+ {name:"B — Memory Mission", key:"memory", type:"memory", items:[
+  {seq:"🐱 🍎 🚗",ask:"Which object was SECOND?",o:["🐱","🍎","🚗","🌳"],a:1},
+  {seq:"⭐ 🐶 🍎 🌳",ask:"Which object was THIRD?",o:["⭐","🐶","🍎","🌳"],a:2},
+  {seq:"🚗 🟢 🐱 ⭐",ask:"Which object was FIRST?",o:["🚗","🟢","🐱","⭐"],a:0},
+  {seq:"🍎 🐶 🌳 🚲 ⭐",ask:"Which object was FIFTH?",o:["🍎","🐶","🌳","🚲","⭐"],a:4},
+  {seq:"🔵 ⭐ 🐱 🍎",ask:"Which object was FOURTH?",o:["🔵","⭐","🐱","🍎"],a:3},
+  {seq:"🐸 🍎 🚗 ⭐ 🌳",ask:"Which object was SECOND?",o:["🐸","🍎","🚗","⭐","🌳"],a:1},
+  {seq:"⭐ 🐱 🔵 🚲 🍎",ask:"Which object was FOURTH?",o:["⭐","🐱","🔵","🚲","🍎"],a:3},
+  {seq:"🍎 ⭐ 🐶 🌳 🚗",ask:"Which object was THIRD?",o:["🍎","⭐","🐶","🌳","🚗"],a:2},
+  {seq:"🚲 🔵 🌳 🐱 ⭐",ask:"Which object was FIFTH?",o:["🚲","🔵","🌳","🐱","⭐"],a:4},
+  {seq:"🐶 ⭐ 🍎 🚗 🔵",ask:"Which object was FIRST?",o:["🐶","⭐","🍎","🚗","🔵"],a:0}
+ ]},
+ {name:"C — Attention Hunter", key:"attention", type:"attention", items:[]},
+ {name:"D — Stop-Go Challenge", key:"inhibition", type:"inhibition", items:[]},
+ {name:"E — Rule Switch", key:"flexibility", type:"flexibility", items:[]}
+];
+
+let questions=[], index=0, startTime, qStart, responses=[], student={};
+let attentionTargets=[], attentionClicks=0, inhibitionData=null, flexData=null;
+let timerInterval;
+
+function startTest(){
+ student={id:document.getElementById("studentId").value.trim()||"anonymous",
+ age:document.getElementById("age").value, grade:document.getElementById("grade").value};
+ if(!student.age||!student.grade){alert("Please enter age and grade.");return;}
+ buildSpecialQuestions();
+ questions=modules.flatMap(m=>m.items.map((x,i)=>({...x,module:m.name,key:m.key,type:m.type,idx:i})));
+ index=0; responses=[]; startTime=Date.now();
+ document.getElementById("start").classList.add("hidden");
+ document.getElementById("test").classList.remove("hidden");
+ timerInterval=setInterval(updateTimer,1000);
+ showQuestion();
+}
+function buildSpecialQuestions(){
+ modules[2].items=Array.from({length:10},(_,i)=>({type:"attention",module:modules[2].name,key:"attention",i}));
+ modules[3].items=Array.from({length:10},(_,i)=>({type:"inhibition",module:modules[3].name,key:"inhibition",i}));
+ modules[4].items=Array.from({length:10},(_,i)=>({type:"flexibility",module:modules[4].name,key:"flexibility",i}));
+}
+function updateTimer(){
+ let s=Math.floor((Date.now()-startTime)/1000);
+ document.getElementById("timer").textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+}
+function showQuestion(){
+ const x=questions[index];
+ document.getElementById("moduleTitle").textContent=x.module;
+ document.getElementById("feedback").textContent="";
+ document.getElementById("nextBtn").classList.add("hidden");
+ document.getElementById("bar").style.width=((index)/questions.length*100)+"%";
+ qStart=Date.now();
+
+ if(x.type==="reasoning"){
+  document.getElementById("question").innerHTML=`<h3>${x.q}</h3>`+x.o.map((o,i)=>`<button class="option" onclick="answer(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join("");
+ } else if(x.type==="memory"){
+  document.getElementById("question").innerHTML=`<div class="emoji-seq">${x.seq}</div><h3>${x.ask}</h3>`+x.o.map((o,i)=>`<button class="option" onclick="answer(${i})">${o}</button>`).join("");
+ } else if(x.type==="attention"){
+  let symbols=["⭐","🔵","🔺","🟢","⭐","🟡","🔴","⭐","🔵","🟢","🔺","⭐","🟡","🔵","⭐","🔴","🟢","⭐","🔺","🔵","⭐"];
+  attentionTargets=[];
+  document.getElementById("question").innerHTML=`<h3>Click every ⭐. Do not click other symbols.</h3><div class="target-grid">`+
+  symbols.map((s,i)=>{if(s==="⭐")attentionTargets.push(i);return `<button class="target" id="t${i}" onclick="attentionClick(${i},'${s}')">${s}</button>`}).join("")+
+  `</div><button class="primary" onclick="finishSpecial()">Done</button>`;
+ } else if(x.type==="inhibition"){
+  let s=["🟢","🔴","🟢","🟢","🔴","🟢","🔴","🟢","🔴","🟢"][x.i];
+  document.getElementById("question").innerHTML=`<h3>Click GREEN. Do NOT click RED.</h3><div class="emoji-seq">${s}</div><button class="primary" onclick="inhibitionAnswer(true,'${s}')">CLICK</button><button class="secondary" onclick="inhibitionAnswer(false,'${s}')">DO NOT CLICK</button>`;
+ } else {
+  let color=["🔴","🔵","🔴","🔵","⭐","🔴","⭐","🔵","⭐","🔴"][x.i];
+  let rule=x.i<5?"Choose RED":"Choose STAR";
+  document.getElementById("question").innerHTML=`<h3>Rule: ${rule}</h3><div class="emoji-seq">${color}</div><button class="primary" onclick="flexAnswer('${color}')">SELECT</button><button class="secondary" onclick="flexAnswer('none')">DO NOT SELECT</button>`;
+ }
+}
+function answer(choice){
+ const x=questions[index];
+ record(x,choice===x.a,choice,Date.now()-qStart);
+ document.getElementById("feedback").textContent=choice===x.a?"Correct ✓":"Recorded";
+ document.querySelectorAll(".option").forEach(b=>b.disabled=true);
+ document.getElementById("nextBtn").classList.remove("hidden");
+}
+function record(x,correct,answer,rt){
+ responses.push({student_id:student.id,age:student.age,grade:student.grade,module:x.key,item:index+1,correct:correct?1:0,response_time_ms:rt,error:correct?0:1,attempts:1,difficulty:Math.ceil((x.idx+1)/3),timestamp:new Date().toISOString()});
+}
+function nextQuestion(){
+ index++;
+ if(index>=questions.length){finishTest();return;}
+ showQuestion();
+}
+function attentionClick(i,s){
+ if(document.getElementById("t"+i).classList.contains("clicked"))return;
+ document.getElementById("t"+i).classList.add("clicked");
+ let correct=s==="⭐";
+ record(questions[index],correct,i,Date.now()-qStart);
+ attentionClicks++;
+}
+function inhibitionAnswer(clicked,s){
+ let correct=(s==="🟢"&&clicked)||(s==="🔴"&&!clicked);
+ record(questions[index],correct,clicked,Date.now()-qStart);
+ document.getElementById("feedback").textContent=correct?"Correct ✓":"Recorded";
+ document.getElementById("nextBtn").classList.remove("hidden");
+ document.querySelectorAll("button").forEach(b=>{if(b.id!=="nextBtn")b.disabled=true});
+}
+function flexAnswer(selected){
+ let x=questions[index], expected=(x.i<5?selected==="🔴":selected==="⭐");
+ record(x,expected,selected,Date.now()-qStart);
+ document.getElementById("feedback").textContent=expected?"Correct ✓":"Recorded";
+ document.getElementById("nextBtn").classList.remove("hidden");
+}
+function finishSpecial(){
+ index++;
+ if(index>=questions.length)finishTest(); else showQuestion();
+}
+function finishTest(){
+ clearInterval(timerInterval);
+ document.getElementById("test").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
+ const groups={reasoning:"Reasoning",memory:"Working Memory",attention:"Attention",inhibition:"Inhibitory Control",flexibility:"Cognitive Flexibility"};
+ let html="";
+ Object.entries(groups).forEach(([key,label])=>{
+  let r=responses.filter(x=>x.module===key), score=r.length?Math.round(r.reduce((a,b)=>a+b.correct,0)/r.length*100):0;
+  let avg=r.length?Math.round(r.reduce((a,b)=>a+b.response_time_ms,0)/r.length):0;
+  html+=`<div class="metric"><b>${label}</b><div class="big">${score}%</div><small>Avg RT: ${avg} ms</small></div>`;
+ });
+ document.getElementById("metrics").innerHTML=html;
+ document.getElementById("resultIntro").textContent=`Student ${student.id} completed ${responses.length} recorded task interactions.`;
+ document.getElementById("profile").innerHTML=`<div class="instructions"><b>Research interpretation:</b> Use these scores as task-performance indicators. For scientific validation, compare them with an established standardized assessment and analyse reliability, validity and age/grade effects.</div>`;
+ document.getElementById("bar").style.width="100%";
+}
+function downloadCSV(){
+ let headers=["student_id","age","grade","module","item","correct","response_time_ms","error","attempts","difficulty","timestamp"];
+ let csv=headers.join(",")+"\\n"+responses.map(r=>headers.map(h=>JSON.stringify(r[h]??"")).join(",")).join("\\n");
+ let blob=new Blob([csv],{type:"text/csv"});
+ let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`cogniplay_${student.id}_${Date.now()}.csv`;a.click();
+}
+</script>
 </body>
 </html>
