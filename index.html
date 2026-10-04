@@ -2,221 +2,298 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CogniPlay-AI Cognitive Assessment</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#1f2937}
-.container{max-width:900px;margin:30px auto;padding:20px}
-.card{background:white;border-radius:16px;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,.08);margin-bottom:20px}
-h1,h2{text-align:center}
-.subtitle{text-align:center;color:#64748b}
-button{border:0;border-radius:10px;padding:12px 20px;font-size:16px;cursor:pointer;margin:6px}
-.primary{background:#2563eb;color:white}
-.secondary{background:#e5e7eb}
-.option{display:block;width:100%;margin:10px 0;background:#f1f5f9;text-align:left}
-.option:hover{background:#dbeafe}
-.progress{height:10px;background:#e5e7eb;border-radius:10px;overflow:hidden}
-.progress-bar{height:100%;width:0;background:#2563eb;transition:.3s}
-.timer{text-align:right;font-weight:bold;color:#dc2626}
-.hidden{display:none}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
-.metric{padding:15px;background:#f8fafc;border-radius:10px;text-align:center}
-.big{font-size:34px;font-weight:bold}
-.feedback{text-align:center;font-weight:bold;min-height:25px}
-.emoji-seq{font-size:42px;text-align:center;letter-spacing:12px;margin:30px 0}
-.target-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:20px 0}
-.target{font-size:28px;padding:15px;border-radius:8px;background:#f8fafc;cursor:pointer}
-.target.clicked{opacity:.35}
-.instructions{background:#eff6ff;padding:15px;border-radius:10px;margin:15px 0}
-input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;margin:8px 0}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+.container{max-width:950px;margin:25px auto;padding:18px}.card{background:#fff;border-radius:18px;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,.08);margin-bottom:20px}
+h1,h2{text-align:center}.subtitle{text-align:center;color:#64748b}.hidden{display:none}
+button{border:0;border-radius:10px;padding:12px 18px;font-size:16px;cursor:pointer;margin:5px}
+.primary{background:#2563eb;color:white}.secondary{background:#e5e7eb;color:#172033}.option{display:block;width:100%;text-align:left;background:#f1f5f9}
+.option:hover{background:#dbeafe}.option:disabled{opacity:.65;cursor:default}
+input{width:100%;padding:12px;margin:7px 0 12px;border:1px solid #cbd5e1;border-radius:8px}
+.progress{height:10px;background:#e5e7eb;border-radius:10px;overflow:hidden}.progress-bar{height:100%;background:#2563eb;width:0}
+.timer{text-align:right;font-weight:bold;color:#dc2626}.feedback{text-align:center;min-height:25px;font-weight:bold}
+.emoji-seq{text-align:center;font-size:42px;letter-spacing:10px;margin:25px 0}.target-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.target{font-size:28px;padding:14px;background:#f8fafc}.target.clicked{opacity:.35}.instructions{background:#eff6ff;padding:15px;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.metric{background:#f8fafc;padding:15px;border-radius:12px;text-align:center}
+.big{font-size:32px;font-weight:bold;margin:6px}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:center}th:first-child,td:first-child{text-align:left}
+.download-link{display:inline-block;background:#16a34a;color:white;padding:12px 18px;border-radius:10px;text-decoration:none;margin:5px}
 </style>
 </head>
 <body>
 <div class="container">
 
-<div id="start" class="card">
+<section id="start" class="card">
 <h1>🧠 CogniPlay-AI</h1>
-<p class="subtitle">Gamified Multidimensional Cognitive Assessment Prototype</p>
-<div class="instructions">
-<b>Research prototype:</b> This educational assessment measures task performance in
-reasoning, working memory, attention, inhibitory control, and cognitive flexibility.
-It is not an IQ or clinical diagnostic test.
-</div>
-<label>Student ID / Code</label>
-<input id="studentId" placeholder="e.g., S001">
-<label>Age</label>
-<input id="age" type="number" min="5" max="15" placeholder="8–11">
-<label>Grade</label>
-<input id="grade" type="number" min="1" max="10" placeholder="3–5">
-<button class="primary" onclick="startTest()">Start Test</button>
-</div>
+<p class="subtitle">Gamified Multidimensional Cognitive Assessment</p>
+<div class="instructions"><b>Research prototype:</b> This assessment measures task performance in reasoning,
+working memory, attention, inhibitory control and cognitive flexibility. It is not a clinical diagnosis or a validated IQ test.</div>
+<label>Student ID / Code</label><input id="studentId" placeholder="e.g. S001">
+<label>Age</label><input id="age" type="number" min="5" max="15" placeholder="8–11">
+<label>Grade</label><input id="grade" type="number" min="1" max="10" placeholder="3–5">
+<button class="primary" onclick="startTest()">Start Assessment</button>
+<button class="secondary" onclick="showDashboard()">Teacher Dashboard</button>
+</section>
 
-<div id="test" class="card hidden">
+<section id="test" class="card hidden">
 <div class="timer">Time: <span id="timer">00:00</span></div>
 <div class="progress"><div id="bar" class="progress-bar"></div></div>
-<h2 id="moduleTitle"></h2>
-<div id="question"></div>
-<div id="feedback" class="feedback"></div>
-<div style="text-align:center">
-<button id="nextBtn" class="primary hidden" onclick="nextQuestion()">Next</button>
-</div>
-</div>
+<h2 id="moduleTitle"></h2><div id="question"></div><div id="feedback" class="feedback"></div>
+<div style="text-align:center"><button id="nextBtn" class="primary hidden" onclick="nextQuestion()">Next</button></div>
+</section>
 
-<div id="result" class="card hidden">
-<h1>Assessment Completed</h1>
-<p id="resultIntro"></p>
-<div id="metrics" class="grid"></div>
+<section id="result" class="card hidden">
+<h1>Assessment Completed</h1><p id="resultIntro"></p><div id="metrics" class="grid"></div>
 <h2>Cognitive Performance Profile</h2>
-<div id="profile"></div>
-<button class="primary" onclick="downloadCSV()">Download Behavioural Data (CSV)</button>
+<div class="instructions">The bands below are <b>prototype research bands</b> for demonstration only.
+They must be calibrated and validated against an established standardized assessment before being used for research conclusions.</div>
+<div id="profile" class="grid" style="margin-top:12px"></div>
+<div style="text-align:center;margin-top:18px">
+<a id="csvLink" class="download-link" href="#" download>Download Behavioural Data (CSV)</a>
+<button class="secondary" onclick="showDashboard()">View Student Dashboard</button>
 <button class="secondary" onclick="location.reload()">New Assessment</button>
 </div>
+</section>
+
+<section id="dashboard" class="card hidden">
+<h1>📊 Teacher Dashboard</h1>
+<p class="subtitle">Completed assessments stored in this browser</p>
+<div id="dashboardMetrics" class="grid"></div>
+<h2>Average Cognitive Level of Attempted Students</h2>
+<div id="averageLevel" class="instructions"></div>
+<h2>Average Performance by Cognitive Dimension</h2>
+<div id="dimensionAverages" class="grid"></div>
+<h2>Student Attempts</h2><div class="table-wrap" id="studentTable"></div>
+<div style="text-align:center;margin-top:20px">
+<a id="allCsvLink" class="download-link" href="#" download>Download All Student Data (CSV)</a>
+<button class="secondary" onclick="hideDashboard()">Back</button>
+<button class="secondary" onclick="clearStoredData()">Clear Stored Data</button>
+</div>
+</section>
+
 </div>
 
 <script>
-const modules = [
- {name:"A — Pattern Detective", key:"reasoning", type:"reasoning", items:[
-  {q:"What comes next? 🔵 🔴 🔵 🔴 ?",o:["🔵","🔴","🟢","⭐"],a:0},
-  {q:"What comes next? ⭐ ⭐ 🔵 ⭐ ⭐ 🔵 ?",o:["⭐","🔵","🟢","🔺"],a:0},
-  {q:"2 → 4 → 8 → 16 → ?",o:["18","24","32","36"],a:2},
-  {q:"5 → 10 → 15 → 20 → ?",o:["21","25","30","35"],a:1},
-  {q:"▲ ■ ▲ ■ ▲ ?",o:["■","▲","●","◆"],a:0},
-  {q:"3 → 6 → 12 → 24 → ?",o:["30","36","48","60"],a:2},
-  {q:"A, C, E, G, ?",o:["H","I","J","K"],a:1},
-  {q:"10, 9, 7, 4, ?",o:["2","1","0","-1"],a:1},
-  {q:"If all cats are animals, which must be true?",o:["All animals are cats","Some cats are animals","No cats are animals","Cats are plants"],a:1},
-  {q:"Which does not belong?",o:["2","4","6","9"],a:3}
- ]},
- {name:"B — Memory Mission", key:"memory", type:"memory", items:[
-  {seq:"🐱 🍎 🚗",ask:"Which object was SECOND?",o:["🐱","🍎","🚗","🌳"],a:1},
-  {seq:"⭐ 🐶 🍎 🌳",ask:"Which object was THIRD?",o:["⭐","🐶","🍎","🌳"],a:2},
-  {seq:"🚗 🟢 🐱 ⭐",ask:"Which object was FIRST?",o:["🚗","🟢","🐱","⭐"],a:0},
-  {seq:"🍎 🐶 🌳 🚲 ⭐",ask:"Which object was FIFTH?",o:["🍎","🐶","🌳","🚲","⭐"],a:4},
-  {seq:"🔵 ⭐ 🐱 🍎",ask:"Which object was FOURTH?",o:["🔵","⭐","🐱","🍎"],a:3},
-  {seq:"🐸 🍎 🚗 ⭐ 🌳",ask:"Which object was SECOND?",o:["🐸","🍎","🚗","⭐","🌳"],a:1},
-  {seq:"⭐ 🐱 🔵 🚲 🍎",ask:"Which object was FOURTH?",o:["⭐","🐱","🔵","🚲","🍎"],a:3},
-  {seq:"🍎 ⭐ 🐶 🌳 🚗",ask:"Which object was THIRD?",o:["🍎","⭐","🐶","🌳","🚗"],a:2},
-  {seq:"🚲 🔵 🌳 🐱 ⭐",ask:"Which object was FIFTH?",o:["🚲","🔵","🌳","🐱","⭐"],a:4},
-  {seq:"🐶 ⭐ 🍎 🚗 🔵",ask:"Which object was FIRST?",o:["🐶","⭐","🍎","🚗","🔵"],a:0}
- ]},
- {name:"C — Attention Hunter", key:"attention", type:"attention", items:[]},
- {name:"D — Stop-Go Challenge", key:"inhibition", type:"inhibition", items:[]},
- {name:"E — Rule Switch", key:"flexibility", type:"flexibility", items:[]}
-];
+const modules=[
+{name:"A — Pattern Detective",key:"reasoning",items:[
+["What comes next? 🔵 🔴 🔵 🔴 ?",["🔵","🔴","🟢","⭐"],0],
+["What comes next? ⭐ ⭐ 🔵 ⭐ ⭐ 🔵 ?",["⭐","🔵","🟢","🔺"],0],
+["2 → 4 → 8 → 16 → ?",["18","24","32","36"],2],
+["5 → 10 → 15 → 20 → ?",["21","25","30","35"],1],
+["▲ ■ ▲ ■ ▲ ?",["■","▲","●","◆"],0],
+["3 → 6 → 12 → 24 → ?",["30","36","48","60"],2],
+["A, C, E, G, ?",["H","I","J","K"],1],
+["10, 9, 7, 4, ?",["2","1","0","-1"],1],
+["If all cats are animals, which must be true?",["All animals are cats","Some cats are animals","No cats are animals","Cats are plants"],1],
+["Which does not belong?",["2","4","6","9"],3]
+]},
+{name:"B — Memory Mission",key:"memory",items:[
+["🐱 🍎 🚗","Which object was SECOND?",["🐱","🍎","🚗","🌳"],1],
+["⭐ 🐶 🍎 🌳","Which object was THIRD?",["⭐","🐶","🍎","🌳"],2],
+["🚗 🟢 🐱 ⭐","Which object was FIRST?",["🚗","🟢","🐱","⭐"],0],
+["🍎 🐶 🌳 🚲 ⭐","Which object was FIFTH?",["🍎","🐶","🌳","🚲","⭐"],4],
+["🔵 ⭐ 🐱 🍎","Which object was FOURTH?",["🔵","⭐","🐱","🍎"],3],
+["🐸 🍎 🚗 ⭐ 🌳","Which object was SECOND?",["🐸","🍎","🚗","⭐","🌳"],1],
+["⭐ 🐱 🔵 🚲 🍎","Which object was FOURTH?",["⭐","🐱","🔵","🚲","🍎"],3],
+["🍎 ⭐ 🐶 🌳 🚗","Which object was THIRD?",["🍎","⭐","🐶","🌳","🚗"],2],
+["🚲 🔵 🌳 🐱 ⭐","Which object was FIFTH?",["🚲","🔵","🌳","🐱","⭐"],4],
+["🐶 ⭐ 🍎 🚗 🔵","Which object was FIRST?",["🐶","⭐","🍎","🚗","🔵"],0]
+]}];
 
-let questions=[], index=0, startTime, qStart, responses=[], student={};
-let attentionTargets=[], attentionClicks=0, inhibitionData=null, flexData=null;
-let timerInterval;
+let questions=[],index=0,responses=[],student={},startTime,qStart,timerInterval;
 
 function startTest(){
  student={id:document.getElementById("studentId").value.trim()||"anonymous",
- age:document.getElementById("age").value, grade:document.getElementById("grade").value};
- if(!student.age||!student.grade){alert("Please enter age and grade.");return;}
- buildSpecialQuestions();
- questions=modules.flatMap(m=>m.items.map((x,i)=>({...x,module:m.name,key:m.key,type:m.type,idx:i})));
- index=0; responses=[]; startTime=Date.now();
+ age:document.getElementById("age").value,grade:document.getElementById("grade").value};
+ if(!student.age||!student.grade){alert("Please enter age and grade.");return}
+ buildQuestions();index=0;responses=[];startTime=Date.now();
  document.getElementById("start").classList.add("hidden");
+ document.getElementById("dashboard").classList.add("hidden");
  document.getElementById("test").classList.remove("hidden");
- timerInterval=setInterval(updateTimer,1000);
- showQuestion();
+ timerInterval=setInterval(updateTimer,1000);showQuestion();
 }
-function buildSpecialQuestions(){
- modules[2].items=Array.from({length:10},(_,i)=>({type:"attention",module:modules[2].name,key:"attention",i}));
- modules[3].items=Array.from({length:10},(_,i)=>({type:"inhibition",module:modules[3].name,key:"inhibition",i}));
- modules[4].items=Array.from({length:10},(_,i)=>({type:"flexibility",module:modules[4].name,key:"flexibility",i}));
+function buildQuestions(){
+ questions=[];
+ modules.forEach(m=>m.items.forEach((a,i)=>questions.push({module:m.name,key:m.key,type:m.key,idx:i,q:a[0],o:a[1],a:a[2]})));
+ for(let i=0;i<10;i++)questions.push({module:"C — Attention Hunter",key:"attention",type:"attention",idx:i});
+ for(let i=0;i<10;i++)questions.push({module:"D — Stop-Go Challenge",key:"inhibition",type:"inhibition",idx:i});
+ for(let i=0;i<10;i++)questions.push({module:"E — Rule Switch",key:"flexibility",type:"flexibility",idx:i});
 }
 function updateTimer(){
  let s=Math.floor((Date.now()-startTime)/1000);
  document.getElementById("timer").textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
 }
 function showQuestion(){
- const x=questions[index];
+ let x=questions[index];qStart=Date.now();
  document.getElementById("moduleTitle").textContent=x.module;
  document.getElementById("feedback").textContent="";
  document.getElementById("nextBtn").classList.add("hidden");
- document.getElementById("bar").style.width=((index)/questions.length*100)+"%";
- qStart=Date.now();
-
+ document.getElementById("bar").style.width=(index/questions.length*100)+"%";
  if(x.type==="reasoning"){
   document.getElementById("question").innerHTML=`<h3>${x.q}</h3>`+x.o.map((o,i)=>`<button class="option" onclick="answer(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join("");
- } else if(x.type==="memory"){
-  document.getElementById("question").innerHTML=`<div class="emoji-seq">${x.seq}</div><h3>${x.ask}</h3>`+x.o.map((o,i)=>`<button class="option" onclick="answer(${i})">${o}</button>`).join("");
- } else if(x.type==="attention"){
-  let symbols=["⭐","🔵","🔺","🟢","⭐","🟡","🔴","⭐","🔵","🟢","🔺","⭐","🟡","🔵","⭐","🔴","🟢","⭐","🔺","🔵","⭐"];
-  attentionTargets=[];
+ }else if(x.type==="memory"){
+  document.getElementById("question").innerHTML=`<div class="emoji-seq">${x.q}</div><h3>${x.o[x.a] ? ["Which object was FIRST?","Which object was SECOND?","Which object was THIRD?","Which object was FOURTH?","Which object was FIFTH?"][x.a] : "Which object was shown?"}</h3>`+
+  x.o.map((o,i)=>`<button class="option" onclick="answer(${i})">${o}</button>`).join("");
+  // The question text is intentionally simplified; the displayed sequence is the actual memory stimulus.
+  document.getElementById("question").querySelector("h3").textContent=["Which object was FIRST?","Which object was SECOND?","Which object was THIRD?","Which object was FOURTH?","Which object was FIFTH?"][x.a];
+ }else if(x.type==="attention"){
+  const symbols=["⭐","🔵","🔺","🟢","⭐","🟡","🔴","⭐","🔵","🟢","🔺","⭐","🟡","🔵","⭐","🔴","🟢","⭐","🔺","🔵","⭐"];
   document.getElementById("question").innerHTML=`<h3>Click every ⭐. Do not click other symbols.</h3><div class="target-grid">`+
-  symbols.map((s,i)=>{if(s==="⭐")attentionTargets.push(i);return `<button class="target" id="t${i}" onclick="attentionClick(${i},'${s}')">${s}</button>`}).join("")+
-  `</div><button class="primary" onclick="finishSpecial()">Done</button>`;
- } else if(x.type==="inhibition"){
-  let s=["🟢","🔴","🟢","🟢","🔴","🟢","🔴","🟢","🔴","🟢"][x.i];
-  document.getElementById("question").innerHTML=`<h3>Click GREEN. Do NOT click RED.</h3><div class="emoji-seq">${s}</div><button class="primary" onclick="inhibitionAnswer(true,'${s}')">CLICK</button><button class="secondary" onclick="inhibitionAnswer(false,'${s}')">DO NOT CLICK</button>`;
- } else {
-  let color=["🔴","🔵","🔴","🔵","⭐","🔴","⭐","🔵","⭐","🔴"][x.i];
-  let rule=x.i<5?"Choose RED":"Choose STAR";
-  document.getElementById("question").innerHTML=`<h3>Rule: ${rule}</h3><div class="emoji-seq">${color}</div><button class="primary" onclick="flexAnswer('${color}')">SELECT</button><button class="secondary" onclick="flexAnswer('none')">DO NOT SELECT</button>`;
+  symbols.map((s,i)=>`<button class="target" id="t${i}" onclick="attentionClick(${i},'${s}')">${s}</button>`).join("")+
+  `</div><button class="primary" onclick="finishAttention()">Done</button>`;
+ }else if(x.type==="inhibition"){
+  const s=["🟢","🔴","🟢","🟢","🔴","🟢","🔴","🟢","🔴","🟢"][x.idx];
+  document.getElementById("question").innerHTML=`<h3>Click GREEN. Do NOT click RED.</h3><div class="emoji-seq">${s}</div>
+  <button class="primary" onclick="inhibitionAnswer(true,'${s}')">CLICK</button><button class="secondary" onclick="inhibitionAnswer(false,'${s}')">DO NOT CLICK</button>`;
+ }else{
+  const s=["🔴","🔵","🔴","🔵","⭐","🔴","⭐","🔵","⭐","🔴"][x.idx];
+  const rule=x.idx<5?"Choose RED":"Choose STAR";
+  document.getElementById("question").innerHTML=`<h3>Rule: ${rule}</h3><div class="emoji-seq">${s}</div>
+  <button class="primary" onclick="flexAnswer('${s}')">SELECT</button><button class="secondary" onclick="flexAnswer('none')">DO NOT SELECT</button>`;
  }
 }
+function record(x,correct,answer,rt){
+ responses.push({student_id:student.id,age:student.age,grade:student.grade,module:x.key,item:x.idx+1,
+ correct:correct?1:0,response_time_ms:rt,error:correct?0:1,attempts:1,difficulty:Math.min(3,Math.floor(x.idx/3)+1),timestamp:new Date().toISOString()});
+}
 function answer(choice){
- const x=questions[index];
- record(x,choice===x.a,choice,Date.now()-qStart);
+ const x=questions[index];record(x,choice===x.a,choice,Date.now()-qStart);
  document.getElementById("feedback").textContent=choice===x.a?"Correct ✓":"Recorded";
  document.querySelectorAll(".option").forEach(b=>b.disabled=true);
  document.getElementById("nextBtn").classList.remove("hidden");
 }
-function record(x,correct,answer,rt){
- responses.push({student_id:student.id,age:student.age,grade:student.grade,module:x.key,item:index+1,correct:correct?1:0,response_time_ms:rt,error:correct?0:1,attempts:1,difficulty:Math.ceil((x.idx+1)/3),timestamp:new Date().toISOString()});
-}
-function nextQuestion(){
- index++;
- if(index>=questions.length){finishTest();return;}
- showQuestion();
-}
+function nextQuestion(){index++;if(index>=questions.length)finishTest();else showQuestion()}
 function attentionClick(i,s){
- if(document.getElementById("t"+i).classList.contains("clicked"))return;
- document.getElementById("t"+i).classList.add("clicked");
- let correct=s==="⭐";
- record(questions[index],correct,i,Date.now()-qStart);
- attentionClicks++;
+ const b=document.getElementById("t"+i);if(b.classList.contains("clicked"))return;
+ b.classList.add("clicked");
+ // Each click is not treated as a separate cognitive item; the final task is scored from all target/non-target clicks.
+}
+function finishAttention(){
+ const x=questions[index], buttons=[...document.querySelectorAll(".target")];
+ const target=buttons.filter(b=>b.textContent==="⭐"), clicked=buttons.filter(b=>b.classList.contains("clicked"));
+ const missed=target.filter(b=>!b.classList.contains("clicked")).length;
+ const falseClicks=clicked.filter(b=>b.textContent!=="⭐").length;
+ const correctClicks=clicked.filter(b=>b.textContent==="⭐").length;
+ const totalTargets=target.length;
+ const score=Math.max(0,Math.round((correctClicks-Math.min(falseClicks,totalTargets))/totalTargets*100));
+ record(x,score>=80,score,Date.now()-qStart);
+ responses[responses.length-1].correct=score>=80?1:0;
+ responses[responses.length-1].attention_score=score;
+ responses[responses.length-1].missed_targets=missed;
+ responses[responses.length-1].false_clicks=falseClicks;
+ nextQuestion();
 }
 function inhibitionAnswer(clicked,s){
- let correct=(s==="🟢"&&clicked)||(s==="🔴"&&!clicked);
- record(questions[index],correct,clicked,Date.now()-qStart);
+ const x=questions[index],correct=(s==="🟢"&&clicked)||(s==="🔴"&&!clicked);
+ record(x,correct,clicked,Date.now()-qStart);
  document.getElementById("feedback").textContent=correct?"Correct ✓":"Recorded";
+ document.querySelectorAll("#question button").forEach(b=>b.disabled=true);
  document.getElementById("nextBtn").classList.remove("hidden");
- document.querySelectorAll("button").forEach(b=>{if(b.id!=="nextBtn")b.disabled=true});
 }
 function flexAnswer(selected){
- let x=questions[index], expected=(x.i<5?selected==="🔴":selected==="⭐");
+ const x=questions[index],expected=(x.idx<5?selected==="🔴":selected==="⭐");
  record(x,expected,selected,Date.now()-qStart);
  document.getElementById("feedback").textContent=expected?"Correct ✓":"Recorded";
+ document.querySelectorAll("#question button").forEach(b=>b.disabled=true);
  document.getElementById("nextBtn").classList.remove("hidden");
 }
-function finishSpecial(){
- index++;
- if(index>=questions.length)finishTest(); else showQuestion();
+function summaryFor(rows){
+ const keys=["reasoning","memory","attention","inhibition","flexibility"],out={};
+ keys.forEach(k=>{let r=rows.filter(x=>x.module===k);out[k]=r.length?Math.round(r.reduce((a,b)=>a+b.correct,0)/r.length*100):0});
+ out.overall=Math.round(keys.reduce((a,k)=>a+out[k],0)/keys.length);return out;
+}
+function level(score){return score>=80?"High":score>=60?"Moderate":"Developing"}
+function saveAttempt(){
+ const attempts=JSON.parse(localStorage.getItem("cogniplay_attempts")||"[]"),s=summaryFor(responses);
+ attempts.push({attempt_id:"A"+Date.now(),student_id:student.id,age:student.age,grade:student.grade,
+ completed_at:new Date().toISOString(),overall_score:s.overall,cognitive_level:level(s.overall),dimensions:s,responses:responses});
+ localStorage.setItem("cogniplay_attempts",JSON.stringify(attempts));
 }
 function finishTest(){
- clearInterval(timerInterval);
- document.getElementById("test").classList.add("hidden");
- document.getElementById("result").classList.remove("hidden");
- const groups={reasoning:"Reasoning",memory:"Working Memory",attention:"Attention",inhibition:"Inhibitory Control",flexibility:"Cognitive Flexibility"};
- let html="";
- Object.entries(groups).forEach(([key,label])=>{
-  let r=responses.filter(x=>x.module===key), score=r.length?Math.round(r.reduce((a,b)=>a+b.correct,0)/r.length*100):0;
-  let avg=r.length?Math.round(r.reduce((a,b)=>a+b.response_time_ms,0)/r.length):0;
-  html+=`<div class="metric"><b>${label}</b><div class="big">${score}%</div><small>Avg RT: ${avg} ms</small></div>`;
- });
- document.getElementById("metrics").innerHTML=html;
- document.getElementById("resultIntro").textContent=`Student ${student.id} completed ${responses.length} recorded task interactions.`;
- document.getElementById("profile").innerHTML=`<div class="instructions"><b>Research interpretation:</b> Use these scores as task-performance indicators. For scientific validation, compare them with an established standardized assessment and analyse reliability, validity and age/grade effects.</div>`;
- document.getElementById("bar").style.width="100%";
+ clearInterval(timerInterval);saveAttempt();
+ document.getElementById("test").classList.add("hidden");document.getElementById("result").classList.remove("hidden");
+ const s=summaryFor(responses);
+ document.getElementById("resultIntro").textContent=`Student ${student.id} completed the assessment. Overall prototype score: ${s.overall}% (${level(s.overall)} band).`;
+ const names={reasoning:"Reasoning",memory:"Working Memory",attention:"Attention",inhibition:"Inhibitory Control",flexibility:"Cognitive Flexibility"};
+ document.getElementById("metrics").innerHTML=Object.entries(names).map(([k,n])=>{
+  let r=responses.filter(x=>x.module===k),sc=r.length?Math.round(r.reduce((a,b)=>a+b.correct,0)/r.length*100):0;
+  let rt=r.length?Math.round(r.reduce((a,b)=>a+b.response_time_ms,0)/r.length):0;
+  return `<div class="metric"><b>${n}</b><div class="big">${sc}%</div><small>Avg RT: ${rt} ms</small></div>`;
+ }).join("");
+ document.getElementById("profile").innerHTML=`<div class="metric"><b>Overall Cognitive Score</b><div class="big">${s.overall}%</div><small>${level(s.overall)} prototype band</small></div>`;
+ const link=document.getElementById("csvLink");
+ link.onclick=()=>downloadCSV(responses,`cogniplay_${student.id}_${Date.now()}.csv`);
+ link.removeAttribute("href");
+ link.removeAttribute("download");
 }
-function downloadCSV(){
- let headers=["student_id","age","grade","module","item","correct","response_time_ms","error","attempts","difficulty","timestamp"];
- let csv=headers.join(",")+"\\n"+responses.map(r=>headers.map(h=>JSON.stringify(r[h]??"")).join(",")).join("\\n");
- let blob=new Blob([csv],{type:"text/csv"});
- let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`cogniplay_${student.id}_${Date.now()}.csv`;a.click();
+function makeCSV(rows){
+ if(!rows.length)return "";
+ const headers=[...new Set(rows.flatMap(r=>Object.keys(r)))];
+ return headers.map(csvEscape).join(",")+"\r\n"+
+   rows.map(r=>headers.map(h=>csvEscape(r[h]??"")).join(",")).join("\r\n");
+}
+function csvEscape(value){
+ const s=String(value);
+ return `"${s.replace(/"/g,'""')}"`;
+}
+function downloadCSV(rows,filename){
+ if(!rows || !rows.length){alert("No assessment data is available to download.");return;}
+ const csv=makeCSV(rows);
+ const blob=new Blob(["\uFEFF",csv],{type:"text/csv;charset=utf-8"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download=filename;
+ a.style.display="none";
+ document.body.appendChild(a);
+ a.click();
+ setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},1000);
+}
+function showDashboard(){
+ document.getElementById("start").classList.add("hidden");document.getElementById("result").classList.add("hidden");
+ document.getElementById("dashboard").classList.remove("hidden");renderDashboard();
+}
+function hideDashboard(){document.getElementById("dashboard").classList.add("hidden");document.getElementById("start").classList.remove("hidden")}
+function renderDashboard(){
+ const a=JSON.parse(localStorage.getItem("cogniplay_attempts")||"[]"),n=a.length;
+ const avg=n?Math.round(a.reduce((s,x)=>s+x.overall_score,0)/n):0;
+ const counts={High:0,Moderate:0,Developing:0};a.forEach(x=>counts[x.cognitive_level]++);
+ document.getElementById("dashboardMetrics").innerHTML=`
+ <div class="metric"><b>Students Attempted</b><div class="big">${n}</div></div>
+ <div class="metric"><b>Average Cognitive Score</b><div class="big">${n?avg+"%":"—"}</div></div>
+ <div class="metric"><b>Average Cognitive Level</b><div class="big" style="font-size:26px">${n?level(avg):"—"}</div></div>
+ <div class="metric"><b>High Band</b><div class="big">${counts.High}</div></div>
+ <div class="metric"><b>Moderate Band</b><div class="big">${counts.Moderate}</div></div>
+ <div class="metric"><b>Developing Band</b><div class="big">${counts.Developing}</div></div>`;
+ document.getElementById("averageLevel").innerHTML=n?
+ `<b>${level(avg)}</b> — average prototype cognitive-performance band across ${n} completed student assessment(s), with an average score of <b>${avg}%</b>.`
+ : "No completed assessments yet.";
+ const keys=[["reasoning","Reasoning"],["memory","Working Memory"],["attention","Attention"],["inhibition","Inhibitory Control"],["flexibility","Cognitive Flexibility"]];
+ document.getElementById("dimensionAverages").innerHTML=keys.map(([k,nm])=>{
+  const v=a.map(x=>x.dimensions[k]).filter(v=>typeof v==="number"),av=v.length?Math.round(v.reduce((p,q)=>p+q,0)/v.length):0;
+  return `<div class="metric"><b>${nm}</b><div class="big">${av}%</div><small>${level(av)}</small></div>`;
+ }).join("");
+ document.getElementById("studentTable").innerHTML=n?`<table><thead><tr><th>Student</th><th>Age</th><th>Grade</th><th>Score</th><th>Level</th><th>Date</th></tr></thead><tbody>`+
+ a.map(x=>`<tr><td>${escapeHtml(x.student_id)}</td><td>${x.age}</td><td>${x.grade}</td><td>${x.overall_score}%</td><td>${x.cognitive_level}</td><td>${new Date(x.completed_at).toLocaleString()}</td></tr>`).join("")+
+ `</tbody></table>`:"<p>No students have attempted the assessment yet.</p>";
+ const all=a.flatMap(x=>x.responses.map(r=>({attempt_id:x.attempt_id,overall_score:x.overall_score,cognitive_level:x.cognitive_level,...r})));
+ const link=document.getElementById("allCsvLink");
+ if(all.length){
+   link.style.display="inline-block";
+   link.onclick=()=>downloadCSV(all,"cogniplay_all_students.csv");
+   link.removeAttribute("href");
+   link.removeAttribute("download");
+ }else{
+   link.removeAttribute("href");
+   link.removeAttribute("download");
+   link.onclick=null;
+   link.style.display="none";
+ }
+}function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function clearStoredData(){
+ if(confirm("Delete all assessment data stored in this browser?")){localStorage.removeItem("cogniplay_attempts");renderDashboard()}
 }
 </script>
 </body>
