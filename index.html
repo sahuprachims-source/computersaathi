@@ -116,7 +116,15 @@ function startTest(){
 }
 function buildQuestions(){
  questions=[];
- modules.forEach(m=>m.items.forEach((a,i)=>questions.push({module:m.name,key:m.key,type:m.key,idx:i,q:a[0],o:a[1],a:a[2]})));
+ modules.forEach(m=>m.items.forEach((a,i)=>{
+  // Reasoning uses [question, options, answerIndex].
+  // Memory uses [sequence, questionText, options, answerIndex].
+  if(m.key==="memory") {
+   questions.push({module:m.name,key:m.key,type:m.key,idx:i,q:a[0],prompt:a[1],o:a[2],a:a[3]});
+  } else {
+   questions.push({module:m.name,key:m.key,type:m.key,idx:i,q:a[0],o:a[1],a:a[2]});
+  }
+ }));
  for(let i=0;i<10;i++)questions.push({module:"C — Attention Hunter",key:"attention",type:"attention",idx:i});
  for(let i=0;i<10;i++)questions.push({module:"D — Stop-Go Challenge",key:"inhibition",type:"inhibition",idx:i});
  for(let i=0;i<10;i++)questions.push({module:"E — Rule Switch",key:"flexibility",type:"flexibility",idx:i});
@@ -130,14 +138,13 @@ function showQuestion(){
  document.getElementById("moduleTitle").textContent=x.module;
  document.getElementById("feedback").textContent="";
  document.getElementById("nextBtn").classList.add("hidden");
- document.getElementById("bar").style.width=(index/questions.length*100)+"%";
+ document.getElementById("bar").style.width=((index+1)/questions.length*100)+"%";
  if(x.type==="reasoning"){
   document.getElementById("question").innerHTML=`<h3>${x.q}</h3>`+x.o.map((o,i)=>`<button class="option" onclick="answer(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join("");
  }else if(x.type==="memory"){
-  document.getElementById("question").innerHTML=`<div class="emoji-seq">${x.q}</div><h3>${x.o[x.a] ? ["Which object was FIRST?","Which object was SECOND?","Which object was THIRD?","Which object was FOURTH?","Which object was FIFTH?"][x.a] : "Which object was shown?"}</h3>`+
-  x.o.map((o,i)=>`<button class="option" onclick="answer(${i})">${o}</button>`).join("");
-  // The question text is intentionally simplified; the displayed sequence is the actual memory stimulus.
-  document.getElementById("question").querySelector("h3").textContent=["Which object was FIRST?","Which object was SECOND?","Which object was THIRD?","Which object was FOURTH?","Which object was FIFTH?"][x.a];
+  // Show the memory sequence first, then the exact question stored with the item.
+  document.getElementById("question").innerHTML=`<div class="emoji-seq">${x.q}</div><h3>${x.prompt}</h3>`+
+  x.o.map((o,i)=>`<button class="option" onclick="answer(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join("");
  }else if(x.type==="attention"){
   const symbols=["⭐","🔵","🔺","🟢","⭐","🟡","🔴","⭐","🔵","🟢","🔺","⭐","🟡","🔵","⭐","🔴","🟢","⭐","🔺","🔵","⭐"];
   document.getElementById("question").innerHTML=`<h3>Click every ⭐. Do not click other symbols.</h3><div class="target-grid">`+
@@ -212,8 +219,10 @@ function saveAttempt(){
  localStorage.setItem("cogniplay_attempts",JSON.stringify(attempts));
 }
 function finishTest(){
- clearInterval(timerInterval);saveAttempt();
- document.getElementById("test").classList.add("hidden");document.getElementById("result").classList.remove("hidden");
+ clearInterval(timerInterval);
+ saveAttempt();
+ document.getElementById("test").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
  const s=summaryFor(responses);
  document.getElementById("resultIntro").textContent=`Student ${student.id} completed the assessment. Overall prototype score: ${s.overall}% (${level(s.overall)} band).`;
  const names={reasoning:"Reasoning",memory:"Working Memory",attention:"Attention",inhibition:"Inhibitory Control",flexibility:"Cognitive Flexibility"};
@@ -224,7 +233,7 @@ function finishTest(){
  }).join("");
  document.getElementById("profile").innerHTML=`<div class="metric"><b>Overall Cognitive Score</b><div class="big">${s.overall}%</div><small>${level(s.overall)} prototype band</small></div>`;
  const link=document.getElementById("csvLink");
- link.onclick=()=>downloadCSV(responses,`cogniplay_${student.id}_${Date.now()}.csv`);
+ link.onclick=()=>downloadCSV(responses,`cogniplay_${safeFilename(student.id)}_${Date.now()}.csv`);
  link.removeAttribute("href");
  link.removeAttribute("download");
 }
@@ -238,6 +247,9 @@ function csvEscape(value){
  const s=String(value);
  return `"${s.replace(/"/g,'""')}"`;
 }
+function safeFilename(value){
+ return String(value||"anonymous").replace(/[^a-z0-9_-]/gi,"_").slice(0,80)||"anonymous";
+}
 function downloadCSV(rows,filename){
  if(!rows || !rows.length){alert("No assessment data is available to download.");return;}
  const csv=makeCSV(rows);
@@ -249,7 +261,8 @@ function downloadCSV(rows,filename){
  a.style.display="none";
  document.body.appendChild(a);
  a.click();
- setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},1000);
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function showDashboard(){
  document.getElementById("start").classList.add("hidden");document.getElementById("result").classList.add("hidden");
@@ -281,17 +294,18 @@ function renderDashboard(){
  const all=a.flatMap(x=>x.responses.map(r=>({attempt_id:x.attempt_id,overall_score:x.overall_score,cognitive_level:x.cognitive_level,...r})));
  const link=document.getElementById("allCsvLink");
  if(all.length){
-   link.style.display="inline-block";
-   link.onclick=()=>downloadCSV(all,"cogniplay_all_students.csv");
-   link.removeAttribute("href");
-   link.removeAttribute("download");
- }else{
-   link.removeAttribute("href");
-   link.removeAttribute("download");
-   link.onclick=null;
-   link.style.display="none";
+  link.style.display="inline-block";
+  link.onclick=()=>downloadCSV(all,"cogniplay_all_students.csv");
+  link.removeAttribute("href");
+  link.removeAttribute("download");
+ } else {
+  link.removeAttribute("href");
+  link.removeAttribute("download");
+  link.onclick=null;
+  link.style.display="none";
  }
-}function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function clearStoredData(){
  if(confirm("Delete all assessment data stored in this browser?")){localStorage.removeItem("cogniplay_attempts");renderDashboard()}
 }
